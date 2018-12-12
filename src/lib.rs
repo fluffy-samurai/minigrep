@@ -1,6 +1,8 @@
-use std::env;
-use std::error::Error;
-use std::fs;
+use std::{
+    fs,
+    env,
+    error::Error
+};
 
 pub struct Config {
     pub query: String,
@@ -8,10 +10,9 @@ pub struct Config {
     pub case_sensitive: bool,
 }
 
-
 impl Config {
     pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
-args.next();
+        args.next();
 
         let query = match args.next() {
             Some(arg) => arg,
@@ -29,7 +30,6 @@ args.next();
     }
 }
 
-
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
@@ -40,7 +40,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     };
 
     for line in results {
-        println!("{}", line)
+        println!("{}", line);
     }
 
     Ok(())
@@ -54,6 +54,7 @@ fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
+
     contents.lines()
         .filter(|line| line.to_lowercase().contains(&query))
         .collect()
@@ -64,7 +65,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         let query = "duct";
         let contents = "\
 Rust:
